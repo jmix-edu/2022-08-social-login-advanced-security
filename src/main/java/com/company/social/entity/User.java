@@ -9,10 +9,15 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.security.authentication.JmixUserDetails;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 @JmixEntity
@@ -20,10 +25,10 @@ import java.util.UUID;
 @Table(name = "USER_", indexes = {
         @Index(name = "IDX_USER__ON_USERNAME", columnList = "USERNAME", unique = true)
 })
-public class User implements JmixUserDetails, HasTimeZone {
+public class User implements JmixUserDetails, OidcUser, HasTimeZone {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     @JmixGeneratedValue
     private UUID id;
 
@@ -55,8 +60,39 @@ public class User implements JmixUserDetails, HasTimeZone {
     @Column(name = "TIME_ZONE_ID")
     protected String timeZoneId;
 
+    @Column(name = "GOOGLE_ID")
+    private String googleId;
+
+    @Column(name = "GITHUB_ID")
+    private Integer githubId;
+
     @Transient
     protected Collection<? extends GrantedAuthority> authorities;
+
+    @Transient
+    private OidcUserInfo userInfo;
+
+    @Transient
+    private OidcIdToken idToken;
+
+    @Transient
+    private Map<String, Object> attributes;
+
+    public Integer getGithubId() {
+        return githubId;
+    }
+
+    public void setGithubId(Integer githubId) {
+        this.githubId = githubId;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
 
     public UUID getId() {
         return id;
@@ -167,5 +203,42 @@ public class User implements JmixUserDetails, HasTimeZone {
 
     public void setTimeZoneId(String timeZoneId) {
         this.timeZoneId = timeZoneId;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return idToken;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setUserInfo(OidcUserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public void setIdToken(OidcIdToken idToken) {
+        this.idToken = idToken;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
+    public String getName() {
+        return username;
     }
 }

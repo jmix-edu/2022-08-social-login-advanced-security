@@ -7,6 +7,7 @@ import io.jmix.securityui.authentication.AuthDetails;
 import io.jmix.securityui.authentication.LoginScreenSupport;
 import io.jmix.ui.JmixApp;
 import io.jmix.ui.Notifications;
+import io.jmix.ui.WebBrowserTools;
 import io.jmix.ui.action.Action;
 import io.jmix.ui.component.*;
 import io.jmix.ui.navigation.Route;
@@ -58,6 +59,9 @@ public class LoginScreen extends Screen {
     private JmixApp app;
 
     private final Logger log = LoggerFactory.getLogger(LoginScreen.class);
+
+    @Autowired
+    private WebBrowserTools webBrowserTools;
 
     @Subscribe
     private void onInit(InitEvent event) {
@@ -128,11 +132,11 @@ public class LoginScreen extends Screen {
 
     @Subscribe("loginGoogle")
     public void onLoginGoogle(Action.ActionPerformedEvent event) {
-        // todo navigate to Google authorization
+        webBrowserTools.showWebPage("/oauth2/authorization/google", ParamsMap.of("target", "_self"));
     }
 
     @Subscribe("loginGitHub")
     public void onLoginGitHub(Action.ActionPerformedEvent event) {
-        // todo navigate to GitHub authorization
+        webBrowserTools.showWebPage("/oauth2/authorization/github", ParamsMap.of("target", "_self"));
     }
 }

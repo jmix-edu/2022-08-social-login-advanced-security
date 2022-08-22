@@ -43,6 +43,9 @@ dependencies {
     implementation 'io.jmix.ui:jmix-ui-themes'
     themes 'io.jmix.ui:jmix-ui-themes'
     implementation 'io.jmix.ui:jmix-ui-themes'
+
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
 }
 
 test {
